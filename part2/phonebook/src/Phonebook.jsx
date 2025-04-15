@@ -1,10 +1,28 @@
 import React from "react";
+import personService from "./services/persons";
 
 const Listing = ({ person }) => {
   return (
     <div>
-      {person.name} {person.number}
+      {person.name} {person.number} <DeleteButton person={person} />
     </div>
+  );
+};
+
+const DeleteButton = ({ person }) => {
+  const deletePerson = () => {
+
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .deletePerson(person.id)
+        .then(() => {
+          location.reload();
+        });
+    }
+  };
+
+  return (
+    <button onClick={deletePerson}>delete</button>
   );
 };
 
