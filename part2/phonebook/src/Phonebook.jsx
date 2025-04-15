@@ -1,15 +1,16 @@
 import React from "react";
 import personService from "./services/persons";
 
-const Listing = ({ person }) => {
+function Listing({ person, setActionMessage, setActionSuccess }) {
   return (
     <div>
-      {person.name} {person.number} <DeleteButton person={person} />
+      {person.name} {person.number}
+      <DeleteButton setActionMessage={setActionMessage} setActionSuccess={setActionSuccess} person={person} />
     </div>
   );
-};
+}
 
-const DeleteButton = ({ person }) => {
+function DeleteButton({ setActionMessage, setActionSuccess, person }) {
   const deletePerson = () => {
 
     if (window.confirm(`Delete ${person.name}?`)) {
@@ -17,6 +18,14 @@ const DeleteButton = ({ person }) => {
         .deletePerson(person.id)
         .then(() => {
           location.reload();
+        })
+        .catch(error => {
+          setActionMessage(`${person.name} has already been removed from server`);
+          setActionSuccess(false);
+
+          setTimeout(() => {
+            setActionMessage(null);
+          }, 5000)
         });
     }
   };
@@ -24,9 +33,9 @@ const DeleteButton = ({ person }) => {
   return (
     <button onClick={deletePerson}>delete</button>
   );
-};
+}
 
-const Phonebook = ({ persons, search }) => {
+function Phonebook({ setActionMessage, setActionSuccess, persons, search }) {
   const nameContains = (person) => {
     return person.name.toLowerCase().includes(search.toLowerCase());
   };
@@ -34,10 +43,15 @@ const Phonebook = ({ persons, search }) => {
   return (
     <div>
       {persons.filter(nameContains).map((person) => (
-        <Listing key={person.id} person={person} />
+        <Listing
+          setActionMessage={setActionMessage}
+          setActionSuccess={setActionSuccess}
+          person={person}
+          key={person.id}
+        />
       ))}
     </div>
   );
-};
+}
 
 export default Phonebook;

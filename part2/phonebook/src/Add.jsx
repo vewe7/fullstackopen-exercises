@@ -1,5 +1,5 @@
-import personService from "./services/persons";
 import React from "react";
+import personService from "./services/persons";
 
 function Add(props) {
   const handleNameChange = (event) => {
@@ -27,11 +27,20 @@ function Add(props) {
           props.setPersons(props.persons.concat(resPerson));
           props.setNewName("");
           props.setNewNumber("");
+          props.setActionMessage(`Added ${resPerson.name}`);
+          props.setActionSuccess(true);
+
+          setTimeout(() => {
+            setActionMessage(null);
+          }, 5000);
         })
         .catch(error => {
-          alert(
-            "There was an error adding the person to the server"
-          );
+          props.setActionMessage(`Error adding person to the server`);
+          props.setActionSuccess(false);
+
+          setTimeout(() => {
+            setActionMessage(null);
+          }, 5000);
         })
     }
   };
