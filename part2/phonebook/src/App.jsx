@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import personService from "./services/persons";
 import Phonebook from "./Phonebook";
 import Search from "./Search";
 import Add from "./Add";
@@ -11,10 +11,10 @@ function App() {
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then(response => {
-        setPersons(response.data);
+    personService
+      .getAll()
+      .then(personsData => {
+        setPersons(personsData);
       });
   }, []);
 

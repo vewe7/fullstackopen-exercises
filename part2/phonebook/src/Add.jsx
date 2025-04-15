@@ -1,4 +1,4 @@
-import axios from "axios";
+import personService from "./services/persons";
 import React from "react";
 
 function Add(props) {
@@ -21,10 +21,10 @@ function Add(props) {
         number: props.newNumber
       };
 
-      axios
-        .post("http://localhost:3001/persons/", newPerson)
-        .then(response => {
-          props.setPersons(props.persons.concat(response.data));
+      personService
+        .create(newPerson)
+        .then(resPerson => {
+          props.setPersons(props.persons.concat(resPerson));
           props.setNewName("");
           props.setNewNumber("");
         })
