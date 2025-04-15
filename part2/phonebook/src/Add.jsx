@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 
 function Add(props) {
@@ -8,6 +9,7 @@ function Add(props) {
   const handleNumberChange = (event) => {
     props.setNewNumber(event.target.value);
   };
+
   const addPerson = (event) => {
     event.preventDefault();
 
@@ -16,14 +18,24 @@ function Add(props) {
     } else {
       const newPerson = {
         name: props.newName,
-        number: props.newNumber,
-        id: props.persons.length + 1,
+        number: props.newNumber
       };
-      props.setPersons(props.persons.concat(newPerson));
-      props.setNewName("");
-      props.setNewNumber("");
+
+      axios
+        .post("http://localhost:3001/persons/", newPerson)
+        .then(response => {
+          props.setPersons(props.persons.concat(response.data));
+          props.setNewName("");
+          props.setNewNumber("");
+        })
+        .catch(error => {
+          alert(
+            "There was an error adding the person to the server"
+          );
+        })
     }
   };
+
   return (
     <form onSubmit={addPerson}>
       <div>
