@@ -1,6 +1,4 @@
-import React from "react";
-
-function Search({ searchValue, setSearchValue }) {
+export default function Search({ searchValue, setSearchValue }) {
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
@@ -12,5 +10,3 @@ function Search({ searchValue, setSearchValue }) {
     </div>
   );
 }
-
-export default Search;

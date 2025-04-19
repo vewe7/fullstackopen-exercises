@@ -1,7 +1,6 @@
-import React from "react";
-import persnoService from "./api/restcountries";
+import CountryView from "./CountryView";
 
-function Results({ countries, search }) {
+export default function Results({ countries, search }) {
   const nameContains = (country) => {
     return country.toLowerCase().includes(search.toLowerCase());
   };
@@ -16,6 +15,10 @@ function Results({ countries, search }) {
     );
   }
 
+  if (matches.length == 1) {
+    return (<CountryView countryName={matches[0]} />);
+  }
+
   return (
     <div>
       {matches.map((country) => (
@@ -26,5 +29,3 @@ function Results({ countries, search }) {
     </div>
   );
 }
-
-export default Results;

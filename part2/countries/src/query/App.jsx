@@ -4,7 +4,7 @@ import restCountries from "./api/restcountries";
 import Search from "./Search";
 import Results from "./Results";
 
-function App() {
+export default function App() {
   const [countryNames, setCountryNames] = useState(null);
   const [searchValue, setSearchValue] = useState("");
 
@@ -27,5 +27,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
