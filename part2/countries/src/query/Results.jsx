@@ -1,6 +1,17 @@
+import { useState, useEffect } from "react";
 import CountryView from "./CountryView";
 
 export default function Results({ countries, search }) {
+  const [viewCountryName, setViewCountryName] = useState("");
+
+  useEffect(() => {
+    if (matches.length === 1) {
+      setViewCountryName(matches[0]);
+    } else {
+      setViewCountryName("");
+    }
+  }, [search]);
+
   const nameContains = (country) => {
     return country.toLowerCase().includes(search.toLowerCase());
   };
@@ -15,15 +26,15 @@ export default function Results({ countries, search }) {
     );
   }
 
-  if (matches.length == 1) {
-    return (<CountryView countryName={matches[0]} />);
+  if (viewCountryName !== "") {
+    return (<CountryView countryName={viewCountryName} />);
   }
 
   return (
     <div>
-      {matches.map((country) => (
-        <div key={country}>
-          {country}
+      {matches.map((countryName) => (
+        <div key={countryName}>
+          {countryName} <button onClick={() => setViewCountryName(countryName)}>Show</button>
         </div>
       ))}
     </div>
