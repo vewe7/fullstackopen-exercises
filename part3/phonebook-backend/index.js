@@ -2,6 +2,10 @@ const express = require("express");
 
 const app = express();
 
+app.use(express.json());
+
+const ID_MAX = 8000000000;
+
 let entries = [
   {
     "id": "1",
@@ -47,6 +51,15 @@ app.delete("/api/persons/:id", (req, res) => {
   entries = entries.filter(entry => entry.id !== req.params.id);
 
   res.status(204).end();
+});
+
+app.post("/api/persons", (req, res) => {
+  const entry = req.body;
+  entry.id = Math.floor(Math.random() * ID_MAX).toString();
+
+  entries.push(entry);
+
+  res.json(entry);
 });
 
 const PORT = 3001;
