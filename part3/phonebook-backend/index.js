@@ -55,8 +55,19 @@ app.delete("/api/persons/:id", (req, res) => {
 
 app.post("/api/persons", (req, res) => {
   const entry = req.body;
-  entry.id = Math.floor(Math.random() * ID_MAX).toString();
 
+  if (!entry.hasOwnProperty("name") || !entry.hasOwnProperty("number")) {
+    return res.status(400).json({
+      error: "body must include name and number"
+    });
+  }
+  if (entries.find(e => e.name === entry.name) !== undefined) {
+    return res.status(409).json({
+      error: "name must be unique"
+    });
+  }
+
+  entry.id = Math.floor(Math.random() * ID_MAX).toString();
   entries.push(entry);
 
   res.json(entry);
