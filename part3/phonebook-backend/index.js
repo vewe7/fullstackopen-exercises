@@ -6,6 +6,8 @@ const app = express();
 
 app.use(express.json());
 
+app.use(express.static("dist"));
+
 const corsOptions = {
   origin: "http://localhost:5173"
 };
