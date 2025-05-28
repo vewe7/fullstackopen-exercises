@@ -1,19 +1,11 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
 
-if (process.argv.length < 3) {
-  console.log("password missing from arguments");
-  process.exit(1);
-}
-
-const password = process.argv[2];
-
-const url = `mongodb+srv://nyoon:${password}@cluster0.dzqayjs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const url = process.env.MONGODB_URL;
 
 mongoose.set("strictQuery", false);
 
 mongoose.connect(url);
-
-
 
 const entrySchema = new mongoose.Schema({
   name: String,
@@ -22,9 +14,7 @@ const entrySchema = new mongoose.Schema({
 
 const Entry = mongoose.model("Entry", entrySchema);
 
-
-
-if (process.argv.length < 5) {
+if (process.argv.length < 4) {
   Entry.find({}).then(result => {
     console.log("phonebook:");
 

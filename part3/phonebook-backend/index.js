@@ -1,5 +1,8 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
+
+const Entry = require("./models/entry");
 
 const app = express();
 
@@ -36,7 +39,9 @@ let entries = [
 ];
 
 app.get("/api/persons", (req, res) => {
-  res.json(entries);
+  Entry.find({}).then(entries => {
+    res.json(entries);
+  });
 });
 
 app.get("/info", (req, res) => {
@@ -44,13 +49,9 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  const entry = entries.find(entry => entry.id === req.params.id);
-
-  if (entry) {
+  Entry.findById(req.params.id).then(entry => {
     res.json(entry);
-  } else {
-    res.status(404).end();
-  }
+  });
 });
 
 app.delete("/api/persons/:id", (req, res) => {
@@ -60,26 +61,25 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-  const entry = req.body;
+  const body = req.body;
 
-  if (!entry.hasOwnProperty("name") || !entry.hasOwnProperty("number")) {
+  if (!body.hasOwnProperty("name") || !body.hasOwnProperty("number")) {
     return res.status(400).json({
       error: "body must include name and number"
     });
   }
-  if (entries.find(e => e.name === entry.name) !== undefined) {
-    return res.status(409).json({
-      error: "name must be unique"
-    });
-  }
 
-  entry.id = Math.floor(Math.random() * ID_MAX).toString();
-  entries.push(entry);
+  const entry = new Entry({
+    name: body.name,
+    number: body.number,
+  });
 
-  res.json(entry);
+  entry.save().then(savedEntry => {
+    res.json(savedEntry);
+  });
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
