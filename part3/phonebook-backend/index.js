@@ -13,13 +13,19 @@ morgan.token("body", (req, res) => JSON.stringify(req.body));
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :body"));
 
 app.get("/api/persons", (req, res) => {
-  Entry.find({}).then(entries => {
-    res.json(entries);
-  });
+  Entry.find({})
+    .then(entries => {
+      res.json(entries);
+    })
+    .catch(error => next(error));
 });
 
 app.get("/info", (req, res) => {
-  res.send(`Phonebook has info for ${entries.length} people<br/> ${Date()}`);
+  Entry.countDocuments({})
+    .then(count => {
+      res.send(`Phone book has info for ${count} people<br/> ${Date()}`);
+    })
+    .catch(error => next(error));
 });
 
 app.get("/api/persons/:id", (req, res, next) => {
@@ -56,9 +62,11 @@ app.post("/api/persons", (req, res) => {
     number: body.number,
   });
 
-  entry.save().then(savedEntry => {
-    res.json(savedEntry);
-  });
+  entry.save()
+    .then(savedEntry => {
+      res.json(savedEntry);
+    })
+    .catch(error => next(error));
 });
 
 const errorHandler = (error, req, res, next) => {
