@@ -104,4 +104,4 @@ describe("favorite blog", () => {
     const result = listHelper.favoriteBlog(emptyList);
     assert.strictEqual(result, null);
   });
-})
+});
