@@ -40,6 +40,14 @@ test("expected number of notes", async () => {
   assert.strictEqual(response.body.length, 2);
 });
 
+test("unique id property is named 'id'", async () => {
+  const response = await api.get("/api/blogs");
+
+  response.body.forEach((blog) => {
+    assert.strictEqual(blog.hasOwnProperty("id"), true);
+  });
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
