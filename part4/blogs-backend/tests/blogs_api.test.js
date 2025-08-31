@@ -48,6 +48,31 @@ test("unique id property is named 'id'", async () => {
   });
 });
 
+test("POST req to /api/blogs creates new blog post", async () => {
+  const newBlog = {
+    _id: "5a422aa71b54a676234d1888",
+    title: "supertest",
+    author: "John Supertest",
+    url: "twitch.tv/northernlion",
+    likes: 10,
+    __v: 0
+  }
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const response = await api.get("/api/blogs");
+
+  const ids = response.body.map(r => r.id);
+
+  assert.strictEqual(response.body.length, initialBlogs.length + 1);
+
+  assert(ids.includes(newBlog._id));
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
