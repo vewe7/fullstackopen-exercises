@@ -3,74 +3,73 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const assert = require("node:assert");
 const app = require("../app");
+const helper = require("./test_helper");
 const Blog = require("../models/blog");
 
 const api = supertest(app);
 
-const initialBlogs = [
-  {
-    _id: "5a422a851b54a676234d17f7",
-    title: "React patterns",
-    author: "Michael Chan",
-    url: "https://reactpatterns.com/",
-    likes: 7,
-    __v: 0
-  },
-  {
-    _id: "5a422aa71b54a676234d17f8",
-    title: "Go To Statement Considered Harmful",
-    author: "Edsger W. Dijkstra",
-    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-    likes: 5,
-    __v: 0
-  }
-];
+describe("when some initial blogs have been saved", () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({});
 
-beforeEach(async () => {
-  await Blog.deleteMany({});
-
-  const blogObjects = initialBlogs.map(blog => new Blog(blog));
-  const promiseArray = blogObjects.map(blog => blog.save());
-  await Promise.all(promiseArray);
-});
-
-test("expected number of notes", async () => {
-  const response = await api.get("/api/blogs");
-
-  assert.strictEqual(response.body.length, 2);
-});
-
-test("unique id property is named 'id'", async () => {
-  const response = await api.get("/api/blogs");
-
-  response.body.forEach((blog) => {
-    assert.strictEqual(blog.hasOwnProperty("id"), true);
+    const blogObjects = helper.initialBlogs.map(blog => new Blog(blog));
+    const promiseArray = blogObjects.map(blog => blog.save());
+    await Promise.all(promiseArray);
   });
-});
 
-test("POST req to /api/blogs creates new blog post", async () => {
-  const newBlog = {
-    _id: "5a422aa71b54a676234d1888",
-    title: "supertest",
-    author: "John Supertest",
-    url: "twitch.tv/northernlion",
-    likes: 10,
-    __v: 0
-  }
+  test("expected number of notes", async () => {
+    const response = await api.get("/api/blogs");
 
-  await api
-    .post("/api/blogs")
-    .send(newBlog)
-    .expect(201)
-    .expect("Content-Type", /application\/json/);
+    assert.strictEqual(response.body.length, 2);
+  });
 
-  const response = await api.get("/api/blogs");
+  test("unique id property is named 'id'", async () => {
+    const response = await api.get("/api/blogs");
 
-  const ids = response.body.map(r => r.id);
+    response.body.forEach((blog) => {
+      assert.strictEqual(blog.hasOwnProperty("id"), true);
+    });
+  });
 
-  assert.strictEqual(response.body.length, initialBlogs.length + 1);
+  describe("a new blog is added", () => {
+    test("POST req to /api/blogs creates new blog post", async () => {
+      const newBlog = {
+        _id: "5a422aa71b54a676234d1888",
+        title: "supertest",
+        author: "John Supertest",
+        url: "twitch.tv/northernlion",
+        likes: 10,
+        __v: 0
+      };
 
-  assert(ids.includes(newBlog._id));
+      await api
+        .post("/api/blogs")
+        .send(newBlog)
+        .expect(201)
+        .expect("Content-Type", /application\/json/);
+
+      const blogsAtEnd = await helper.blogsInDb();
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1);
+
+      const ids = blogsAtEnd.map(r => r.id);
+      assert(ids.includes(newBlog._id));
+    });
+  });
+
+  test("DELETE req to /api/blogs/:id deletes correct blog post", async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    const ids = blogsAtEnd.map(r => r.id);
+    assert(!ids.includes(blogToDelete.id));
+
+    assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1);
+  });
 });
 
 after(async () => {
