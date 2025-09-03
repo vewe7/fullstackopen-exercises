@@ -56,19 +56,42 @@ describe("when some initial blogs have been saved", () => {
     });
   });
 
-  test("DELETE req to /api/blogs/:id deletes correct blog post", async () => {
-    const blogsAtStart = await helper.blogsInDb();
-    const blogToDelete = blogsAtStart[0];
+  describe("an existing blog is deleted", () => {
+    test("DELETE req to /api/blogs/:id deletes correct blog post", async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToDelete = blogsAtStart[0];
 
-    await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
-      .expect(204);
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204);
 
-    const blogsAtEnd = await helper.blogsInDb();
-    const ids = blogsAtEnd.map(r => r.id);
-    assert(!ids.includes(blogToDelete.id));
+      const blogsAtEnd = await helper.blogsInDb();
+      const ids = blogsAtEnd.map(r => r.id);
+      assert(!ids.includes(blogToDelete.id));
 
-    assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1);
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1);
+    });
+  });
+
+  describe("an existing blog is updated", () => {
+    test("Adding one like with PUT correctly updates blog", async () => {
+      const blogsAtStart = await helper.blogsInDb();
+      const blogToUpdate = blogsAtStart[0];
+
+      const updatedBlog = {
+        title: blogToUpdate.title,
+        author: blogToUpdate.author,
+        url: blogToUpdate.url,
+        likes: blogToUpdate.likes + 1,
+      };
+
+      const response = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(updatedBlog)
+        .expect(200);
+
+      assert.strictEqual(response.body.likes, blogToUpdate.likes + 1);
+    });
   });
 });
 
