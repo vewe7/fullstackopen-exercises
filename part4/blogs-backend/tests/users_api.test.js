@@ -6,6 +6,7 @@ const app = require("../app");
 const helper = require("./test_helper");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const Blog = require("../models/blog");
 
 const api = supertest(app);
 
@@ -29,6 +30,18 @@ describe("when there is one user in the db initially", () => {
     const response = await api.get("/api/users");
 
     assert.strictEqual(response.body.length, 1);
+  });
+
+  test("list of blogs is included when listing all users", async () => {
+    const response = await api.get("/api/users");
+
+    response.body.forEach(async (user) => {
+      assert(user.blogs);
+      user.blogs.forEach(async (blog) => {
+        const blogObject = await Blog.findById(blog.id);
+        assert(blogObject);
+      });
+    });
   });
 
   test("creating user with fresh username is successful", async () => {
