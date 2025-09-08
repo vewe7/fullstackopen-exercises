@@ -9,6 +9,12 @@ const User = require("../models/user");
 
 const api = supertest(app);
 
+const newUser = {
+  username: "auhbuhcuh",
+  name: "Buh",
+  password: "buhbuhhuh",
+};
+
 describe("when there is one user in the db initially", () => {
   beforeEach(async () => {
     await User.deleteMany({});
@@ -28,12 +34,6 @@ describe("when there is one user in the db initially", () => {
   test("creating user with fresh username is successful", async () => {
     const usersAtStart = await helper.usersInDb();
 
-    const newUser = {
-      username: "auhbuhcuh",
-      name: "Buh",
-      password: "buhbuhhuh",
-    };
-
     await api
       .post("/api/users")
       .send(newUser)
@@ -45,6 +45,29 @@ describe("when there is one user in the db initially", () => {
 
     const usernames = usersAtEnd.map(u => u.username);
     assert(usernames.includes(newUser.username));
+  });
+
+  describe("sending a bad request when creating user", async () => {
+    test("creating user with existing username returns error", async () => {
+      await api
+        .post("/api/users")
+        .send({ username: "root", password: "admin" })
+        .expect(400);
+    });
+
+    test("creating user with short username returns error", async () => {
+      await api
+        .post("/api/users")
+        .send({ username: "bu", password: "buh" })
+        .expect(400);
+    });
+
+    test("creating user with short password returns error", async () => {
+      await api
+        .post("/api/users")
+        .send({ username: "guh", password: "aa" })
+        .expect(400);
+    });
   });
 });
 
