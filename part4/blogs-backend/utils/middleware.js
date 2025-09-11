@@ -31,7 +31,7 @@ const tokenExtractor = (request, response, next) => {
   if (authorization && authorization.startsWith("Bearer ")) {
     request.token = authorization.replace("Bearer ", "");
   } else {
-    response.status(401).json({ error: "authorization header is missing or invalid" });
+    return response.status(400).json({ error: "authorization header is missing or invalid" });
   }
 
   next();
