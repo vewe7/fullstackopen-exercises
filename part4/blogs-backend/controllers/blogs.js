@@ -60,11 +60,12 @@ blogsRouter.delete("/:id", async (request, response) => {
 });
 
 blogsRouter.put("/:id", async (request, response) => {
-  const { title, author, url, likes } = request.body;
+  const { title, user, author, url, likes } = request.body;
 
   const blog = await Blog.findById(request.params.id);
 
   blog.title = title;
+  blog.user = user;
   blog.author = author;
   blog.url = url;
   blog.likes = likes;
