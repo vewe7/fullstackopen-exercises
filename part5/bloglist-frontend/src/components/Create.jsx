@@ -1,10 +1,10 @@
-import { useState } from "react";
-import blogService from "../services/blogs";
+import { useState } from 'react';
+import blogService from '../services/blogs';
 
 const Create = ({ blogs, setBlogs, setErrorMessage }) => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
   const addBlog = async (e) => {
     e.preventDefault();
@@ -16,19 +16,19 @@ const Create = ({ blogs, setBlogs, setErrorMessage }) => {
 
       setErrorMessage(`a new blog ${title} by ${author} added`);
       setTimeout(() => {
-        setErrorMessage(null)
+        setErrorMessage(null);
       }, 5000);
 
-      setTitle("");
-      setAuthor("");
-      setUrl("");
+      setTitle('');
+      setAuthor('');
+      setUrl('');
     } catch {
-      setErrorMessage("username or password is incorrect.");
+      setErrorMessage('username or password is incorrect.');
       setTimeout(() => {
-        setErrorMessage(null)
+        setErrorMessage(null);
       }, 5000);
     }
-  }
+  };
 
   const blogForm = () => (
     <form onSubmit={addBlog}>
@@ -64,7 +64,7 @@ const Create = ({ blogs, setBlogs, setErrorMessage }) => {
       </div>
       <button type="submit">create</button>
     </form>
-  )
+  );
 
   return (
     <div>
@@ -72,6 +72,6 @@ const Create = ({ blogs, setBlogs, setErrorMessage }) => {
       {blogForm()}
     </div>
   );
-}
+};
 
 export default Create;

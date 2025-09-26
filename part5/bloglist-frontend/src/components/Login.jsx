@@ -1,10 +1,10 @@
-import { useState } from "react";
-import blogService from "../services/blogs";
-import loginService from "../services/login";
+import { useState } from 'react';
+import blogService from '../services/blogs';
+import loginService from '../services/login';
 
 const Login = ({ setUser, setErrorMessage }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -13,20 +13,20 @@ const Login = ({ setUser, setErrorMessage }) => {
       const user = await loginService.login({ username, password });
 
       window.localStorage.setItem(
-        "loggedBlogappUser", JSON.stringify(user)
+        'loggedBlogappUser', JSON.stringify(user)
       );
 
       setUser(user);
       blogService.setToken(user.token);
-      setUsername("");
-      setPassword("");
+      setUsername('');
+      setPassword('');
     } catch {
-      setErrorMessage("username or password is incorrect.");
+      setErrorMessage('username or password is incorrect.');
       setTimeout(() => {
-        setErrorMessage(null)
+        setErrorMessage(null);
       }, 5000);
     }
-  }
+  };
 
   return (
     <div>
@@ -56,6 +56,6 @@ const Login = ({ setUser, setErrorMessage }) => {
       </form>
     </div>
   );
-}
+};
 
 export default Login;

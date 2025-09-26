@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
-import Notification from "./components/Notification";
-import Login from "./components/Login";
-import Create from "./components/Create";
-import Togglable from "./components/Togglable";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+import { useState, useEffect } from 'react';
+import Blog from './components/Blog';
+import Notification from './components/Notification';
+import Login from './components/Login';
+import Create from './components/Create';
+import Togglable from './components/Togglable';
+import blogService from './services/blogs';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -19,7 +18,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
@@ -29,10 +28,10 @@ const App = () => {
   }, []);
 
   const handleLogout = () => {
-    window.localStorage.removeItem("loggedBlogappUser");
+    window.localStorage.removeItem('loggedBlogappUser');
     blogService.setToken(null);
     setUser(null);
-  }
+  };
 
 
   if (user === null) {
@@ -75,6 +74,6 @@ const App = () => {
       )}
     </div>
   );
-}
+};
 
 export default App;
