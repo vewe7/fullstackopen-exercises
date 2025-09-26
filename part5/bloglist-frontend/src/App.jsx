@@ -24,6 +24,7 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
       blogService.setToken(user.token);
+      console.log(user);
     }
   }, []);
 
@@ -63,7 +64,14 @@ const App = () => {
       </Togglable>
 
       {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} />
+        <Blog
+          key={blog.id}
+          user={user}
+          blog={blog}
+          blogs={blogs}
+          setBlogs={setBlogs}
+          setErrorMessage={setErrorMessage}
+        />
       )}
     </div>
   );
