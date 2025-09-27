@@ -2,7 +2,6 @@ import { useState } from 'react';
 import blogService from '../services/blogs';
 
 const Blog = ({ blog, user, blogs, setBlogs, setErrorMessage }) => {
-  console.log(blog);
   const [detailsVisible, setDetailsVisible] = useState(false);
 
   const blogStyle = {
@@ -39,24 +38,23 @@ const Blog = ({ blog, user, blogs, setBlogs, setErrorMessage }) => {
   };
 
   return (
-    <div style={blogStyle}>
-      <div>
+    <div style={blogStyle} className="blog-container">
+      <div className="blog-title-author">
         {blog.title} {blog.author}
         <button onClick={toggleDetails}>{detailsVisible ? 'hide' : 'view'}</button>
-      </div >
-      {detailsVisible && <div>
+      </div>
+      {detailsVisible && <div className="blog-url">
         {blog.url}
       </div>}
-      {detailsVisible && <div>
+      {detailsVisible && <div className="blog-likes">
         {blog.likes} likes <button onClick={handleLike}>like</button>
       </div>}
-      {detailsVisible && <div>
+      {detailsVisible && <div className="blog-user">
         {blog.user.name}
       </div>}
-      {(detailsVisible && blog.user.username === user.username) && <div>
+      {(detailsVisible && blog.user.username === user.username) && <div className="blog-remove">
         <button onClick={handleDelete}>remove</button>
       </div>}
-
     </div>
   );
 };
