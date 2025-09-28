@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import blogService from '../services/blogs';
 
-const Blog = ({ blog, user, blogs, setBlogs, setErrorMessage }) => {
+const Blog = ({ blog, removable, handleLike, handleDelete, setErrorMessage }) => {
   const [detailsVisible, setDetailsVisible] = useState(false);
 
   const blogStyle = {
@@ -14,27 +14,6 @@ const Blog = ({ blog, user, blogs, setBlogs, setErrorMessage }) => {
 
   const toggleDetails = () => {
     setDetailsVisible(!detailsVisible);
-  };
-
-  const handleLike = async () => {
-    const response = await blogService.addLike(blog);
-
-    setBlogs(blogs.map(b => b.id === response.id ? { ...b, likes: b.likes + 1 } : b));
-  };
-
-  const handleDelete = async () => {
-    if (window.confirm(`Remove ${blog.title} by ${blog.author}`)) {
-      try {
-        await blogService.deleteBlog(blog);
-
-        setBlogs(blogs.filter(b => b.id !== blog.id));
-      } catch {
-        setErrorMessage(`error deleting ${blog.title} by ${blog.author}`);
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
-      }
-    }
   };
 
   return (
@@ -52,7 +31,7 @@ const Blog = ({ blog, user, blogs, setBlogs, setErrorMessage }) => {
       {detailsVisible && <div className="blog-user">
         {blog.user.name}
       </div>}
-      {(detailsVisible && blog.user.username === user.username) && <div className="blog-remove">
+      {(detailsVisible && removable) && <div className="blog-remove">
         <button onClick={handleDelete}>remove</button>
       </div>}
     </div>

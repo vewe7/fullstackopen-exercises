@@ -33,6 +33,26 @@ const App = () => {
     setUser(null);
   };
 
+  const handleLike = async (blog) => {
+    const response = await blogService.addLike(blog);
+
+    setBlogs(blogs.map(b => b.id === response.id ? { ...b, likes: b.likes + 1 } : b));
+  };
+
+  const handleDelete = async (blog) => {
+    if (window.confirm(`Remove ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.deleteBlog(blog);
+
+        setBlogs(blogs.filter(b => b.id !== blog.id));
+      } catch {
+        setErrorMessage(`error deleting ${blog.title} by ${blog.author}`);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      }
+    }
+  };
 
   if (user === null) {
     return (
@@ -65,10 +85,10 @@ const App = () => {
       {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
         <Blog
           key={blog.id}
-          user={user}
           blog={blog}
-          blogs={blogs}
-          setBlogs={setBlogs}
+          removable={blog.user.username === user.username}
+          handleLike={() => handleLike(blog)}
+          handleDelete={() => handleDelete(blog)}
           setErrorMessage={setErrorMessage}
         />
       )}

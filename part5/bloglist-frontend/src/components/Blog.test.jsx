@@ -18,7 +18,7 @@ const blog = {
 }
 
 test("blog renders ONLY title and author by default", () => {
-  const { container } = render(<Blog blog={blog} user={user} />);
+  const { container } = render(<Blog blog={blog} removable={false} />);
 
   const titleAuthorDiv = container.querySelector(".blog-title-author");
   expect(titleAuthorDiv).toHaveTextContent("test blog title");
@@ -31,7 +31,7 @@ test("blog renders ONLY title and author by default", () => {
 });
 
 test("blog URL and number of likes is shown when button is clicked to expand details", async () => {
-  const { container } = render(<Blog blog={blog} user={user} />);
+  const { container } = render(<Blog blog={blog} removable={false} />);
 
   const mockUser = userEvent.setup();
   const button = screen.getByText("view");
@@ -42,4 +42,20 @@ test("blog URL and number of likes is shown when button is clicked to expand det
 
   const likesDiv = container.querySelector(".blog-likes");
   expect(likesDiv).toHaveTextContent("5 likes");
+});
+
+test("event handler is called twice when the like button is clicked twice", async () => {
+  const mockHandler = vi.fn();
+  const { container } = render(<Blog blog={blog} removable={false} handleLike={mockHandler} />);
+
+  const mockUser = userEvent.setup();
+
+  const viewButton = screen.getByText("view");
+  await mockUser.click(viewButton);
+
+  const likeButton = screen.getByText("like");
+  await mockUser.click(likeButton);
+  await mockUser.click(likeButton);
+
+  expect(mockHandler.mock.calls).toHaveLength(2);
 });
