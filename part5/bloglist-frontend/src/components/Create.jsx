@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import blogService from '../services/blogs';
 
-const Create = ({ blogs, setBlogs, setErrorMessage }) => {
+const Create = ({ createBlog }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -9,25 +9,11 @@ const Create = ({ blogs, setBlogs, setErrorMessage }) => {
   const addBlog = async (e) => {
     e.preventDefault();
 
-    try {
-      const blog = await blogService.create({ title, author, url });
+    await createBlog({ title, author, url });
 
-      setBlogs(blogs.concat(blog));
-
-      setErrorMessage(`a new blog ${title} by ${author} added`);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-
-      setTitle('');
-      setAuthor('');
-      setUrl('');
-    } catch {
-      setErrorMessage('username or password is incorrect.');
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
+    setTitle('');
+    setAuthor('');
+    setUrl('');
   };
 
   const blogForm = () => (

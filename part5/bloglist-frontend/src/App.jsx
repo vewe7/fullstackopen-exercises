@@ -27,6 +27,25 @@ const App = () => {
     }
   }, []);
 
+  const createBlog = async (fields) => {
+    const { title, author, url } = fields;
+
+    try {
+      const blog = await blogService.create({ title, author, url });
+      setBlogs(blogs.concat(blog));
+
+      setErrorMessage(`a new blog ${title} by ${author} added`);
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    } catch {
+      setErrorMessage("error adding blog");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  }
+
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser');
     blogService.setToken(null);
@@ -75,11 +94,7 @@ const App = () => {
       <button type="button" onClick={handleLogout}>logout</button>
 
       <Togglable buttonLabel="create new blog">
-        <Create
-          blogs={blogs}
-          setBlogs={setBlogs}
-          setErrorMessage={setErrorMessage}
-        />
+        <Create createBlog={createBlog} />
       </Togglable>
 
       {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
