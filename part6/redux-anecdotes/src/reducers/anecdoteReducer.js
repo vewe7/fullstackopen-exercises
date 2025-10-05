@@ -19,7 +19,7 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
-const reducer = (state = initialState, action) => {
+const anecdoteReducer = (state = initialState, action) => {
   if (action.type === "NEW_ANECDOTE") {
     return state.concat({
       content: action.payload.content,
@@ -52,4 +52,4 @@ export const addVote = (id) => {
   };
 };
 
-export default reducer;
+export default anecdoteReducer;
