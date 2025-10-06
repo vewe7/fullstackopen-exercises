@@ -9,7 +9,7 @@ const Notification = () => {
   };
 
   return (
-    <div style={style}>
+    <div style={notification === null ? { display: "none" } : style}>
       {notification}
     </div>
   );
