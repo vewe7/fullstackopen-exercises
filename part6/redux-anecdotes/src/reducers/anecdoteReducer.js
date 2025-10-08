@@ -30,21 +30,21 @@ export const initializeAnecdotes = () => {
   return async (dispatch) => {
     const anecdotes = await anecdoteService.getAll();
     dispatch(setAnecdotes(anecdotes));
-  }
+  };
 };
 
 export const createAnecdote = (content) => {
   return async (dispatch) => {
     const newAnecdote = await anecdoteService.createNew(content);
     dispatch(addAnecdote(newAnecdote));
-  }
+  };
 };
 
 export const createVote = (anecdote) => {
   return async (dispatch) => {
     const updatedAnecdote = await anecdoteService.putVote(anecdote);
     dispatch(addVote(updatedAnecdote));
-  }
+  };
 };
 
 export default anecdoteSlice.reducer;
