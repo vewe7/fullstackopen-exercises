@@ -1,9 +1,13 @@
 import AnecdoteForm from "./components/AnecdoteForm"
 import Notification from "./components/Notification"
+import { useContext } from "react";
+import NotificationContext from "./NotificationContext.jsx";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAnecdotes, voteAnecdote } from "./requests";
 
 const App = () => {
+  const { notificationDispatch } = useContext(NotificationContext);
+
   const queryClient = useQueryClient();
 
   const voteAnecdoteMutation = useMutation({
@@ -15,6 +19,11 @@ const App = () => {
           ? updatedAnecdote
           : anecdote
       ));
+
+      notificationDispatch({ type: "SET", payload: `anecdote '${updatedAnecdote.content}' voted` });
+      setTimeout(() => {
+        notificationDispatch({ type: "CLEAR" });
+      }, 5000);
     }
   });
 
